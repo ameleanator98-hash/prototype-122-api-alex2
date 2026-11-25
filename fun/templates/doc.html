@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav class ="min-w-full min-h-15 flex justify-between fixed top-0 left-0 z-50  p-2 shadow-sm backdrop-blur-md bg-white/40">
+         <div class="flex gap-3 p-2 items-center">
+            <div class = "rounded-xl bg-[#5826df] min-h-[40px] min-w-[40px] flex justify-center items-center">
+                <i data-lucide="book-open"  class="w-6 h-6 text-white"></i>
+            </div>
+            <h1 class = "font-bold text-xl font-mono">Open Alex</h1>
+            <button class="font-sans min-w-24 rounded-xl  text-[#5826df] bg-[#f0f1fe] font-[500] text-[15px] w-[20%] h-7 flex justify-center items-center ">Explorer</button>
+         </div>    
+         <div class="min-w-24 rounded-xl font-sans text-green-800 bg-[#e4f6ea] font-normal text-[15px] w-[20%] h-7 flex justify-center items-center">
+            <div class="h-2 w-2 bg-[#a7d8b6] rounded-full mr-2"></div>
+            API OpenAlex en direct 
+         </div>
+    </nav>
+    <div class=" mt-[130px] max-w-full mx-auto flex flex-col justify-center items-center gap-5">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight leading-tight">Explorez la littérature scientifique mondiale</h1>
+        </div>
+        <div class="max-w-3xl mx-auto text-center">
+            <p class="font-sans text-gray-600  text-xl">Recherchez des articles, thèses et publications en libre accès. Cliquez directement sur la carte signature d'un document pour l'ouvrir.</p>
+        </div>
+    </div>
+    <form action="" method ="POST">
+        <div class="border border-gray-200 min-h-[180px] rounded-xl w-[90%] mx-auto mt-5 flex justify-between items-center pb-5 pr-5 pl-5 pt-5 flex-wrap gap-5 shadow-sm">
+            <label class="flex flex-col w-[300px] relative">
+                <h1 class="mb-2 text-[16px] font-sans font-[500]">Sujet du type de document</h1>
+                <i data-lucide="search" class="text-gray-400 absolute mt-10 ml-1 "></i>
+                <input name='doc' type="text" placeholder="type de document recherhcé" class="border border-gray-200 h-10 rounded-xl p-5 pl-8">
+            </label>
+            <label class="flex flex-col">
+                <h1 class="mb-2 text-[16px] font-sans font-[500]">Nombre(1-25)</h1>
+                <input name="nombre" type="number" class="border border-gray-200 h-10 rounded-xl p-5 pl-8" >
+            </label>
+            <label class="flex flex-col">
+                <button type='submit' class="bg-[#5826df] border-gray-200 h-10 w-44 rounded-xl mt-7 text-white font-bold text-[17px] hover:scale-[1.02] duration-500">Rechercher</button>
+            </label>
+        </div>
+     </form>
+
+        <div class="flex justify-between items-center w-[90%] mx-auto mt-10">
+            <h1 class="text-xl font-sans font-[500]">Documents recommandés (Aperçu)</h1>
+            <p class="text-gray-400 font-sans text-[14px] ">Astuce : cliquez sur l'illustration signature d'un document pour l'ouvrir directement.</p>
+        </div>
+        <!-- resultats  d'alexis !-->
+         
+            <div class="grid grid-col-2 w-[90%] mx-auto mt-10 sm: grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {% if articles %}
+            {%for article in articles %}
+                <div class="w-full h-[420px] bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col transition duration-700 hover:scale-[1.01]  hover:border-violet-200 hover:shadow-lg">
+                
+                    <div class='relative'>
+                        <div class='flex justify-between items-center absolute inset-x-0 top-0 p-0 z-10'>
+                            <p class=" text-[#b4b2d4] text-xl font-[500]  px-4  ">documents openalex</p>
+                            <button class="ml-14 h-7 w-40 bg-[#68b384] font-[500] text-sm text-white rounded-xl">PDF libre d'accès</button>
+                        </div>
+                        <a href="{{article.lien_pdf}}">
+                            <label class="flex justify-center items-center">
+                                <i data-lucide="external-link" class="flex justify-between items-center absolute inset-x-0 top-44 p-0 z-10  text-[15px] text-[#807dc2]"></i>
+                                <p class="flex justify-between items-center absolute inset-x-0 top-44 p-0 z-10 text-white font-[500] text-[15px] ml-7">appuyer pour ouvrir ce document</p>
+                            </label>
+                        </a>
+                        <img src="{{ url_for('static', filename='si.png') }}" class="rounded-t-xl h-[200px] w-full object-cover" alt="">
+                    </div>
+
+                    <div class="p-5">
+                        <div>
+                            
+                            <p class="text-[#8c6ae9] font-[500]">{{ article.type }}</p>
+                            <h1 class="text-[18px] font-bold">{{ article.titre }}</h1>
+                        </div>
+                    <div>
+                    <span>
+                        <p class="text-gray-500 text-[14px]">{{article.auteurs}}</p>
+                    </span>
+                    <div class="flex justify-between mt-5">
+                       <span class='flex justify-between'>
+                            <i data-lucide='globe' class="text-gray-400 h-5 mt-[3px]"></i>
+                            <a href="{{article.lien_page}}">
+                                <p class="text-gray-400">lien page web</p>
+                            </a>
+                       </span>
+                        <button class="flex justify-between pl-1 pr-1 bg-[#e4f6ea] rounded-[8px] h-7 text-green-700 min-w-40 font-[500]">
+                            <i data-lucide="download" class=" h-5 mt-[3px] ml-2"></i>
+                           <a href="{{article.lien_pdf}}">
+                             <p class="">Télécharger PDF</p>
+                           </a>
+                        </button>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+             {%endfor %}
+        {% endif %}
+        </div>
+        <footer class="w-full py-8 bg-white border-t border-gray-200 text-center text-gray-400 text-sm mt-10">
+           creé par un programmeur debutant
+       </footer>
+            
+           
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
